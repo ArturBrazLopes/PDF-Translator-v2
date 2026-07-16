@@ -53,6 +53,7 @@ PROVIDERS: dict[str, dict] = {
         "needs_key": False,
         "env_key": None,
         "models": [
+            "translategemma:latest",
             "gemma4:e4b",
             "llama3.3:8b",
             "llama3.2:3b",

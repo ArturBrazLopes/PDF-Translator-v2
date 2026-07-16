@@ -41,13 +41,9 @@ class PDFTranslatorApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("PDF Translator")
-        self.resizable(False, False)
         self.configure(bg=BG)
 
-        w, h = 620, 860
-        sw = self.winfo_screenwidth()
-        sh = self.winfo_screenheight()
-        self.geometry(f"{w}x{h}+{(sw-w)//2}+{(sh-h)//2}")
+        self._win_w, self._win_h = 620, 860
 
         self._pdf_path    = tk.StringVar()
         self._output_path = tk.StringVar()
@@ -64,6 +60,27 @@ class PDFTranslatorApp(tk.Tk):
         self._elapsed_secs  = 0
 
         self._build_ui()
+        self._center_window()
+
+    def _center_window(self):
+        """Aplica geometria após construir a UI.
+
+        Necessário no macOS/Tk 9.0, onde definir a geometria antes dos
+        widgets às vezes resulta em uma janela minúscula ou cortada.
+        """
+        self.update_idletasks()
+        w, h = self._win_w, self._win_h
+        sw = self.winfo_screenwidth()
+        sh = self.winfo_screenheight()
+        # Não deixa a janela maior que a tela disponível
+        h = min(h, sh - 80)
+        x = max((sw - w) // 2, 0)
+        y = max((sh - h) // 2, 0)
+        self.geometry(f"{w}x{h}+{x}+{y}")
+        self.minsize(480, 600)
+        self.lift()
+        self.attributes("-topmost", True)
+        self.after(300, lambda: self.attributes("-topmost", False))
 
     def _build_ui(self):
         # Header
